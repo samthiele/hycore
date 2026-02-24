@@ -396,6 +396,7 @@ class Template(object):
         :return: A HyImage instance containing the mosaic populated with the requested bands.
         """
         out = None
+        data = None
         for i, box in enumerate(self.boxes):
 
             # get this box
@@ -448,7 +449,10 @@ class Template(object):
                 out[ mask, : ] = data.data[ index[mask, 1], index[mask, 2], : ]
         if len( data.get_wavelengths() ) != data.band_count():
             data.set_wavelengths(np.arange(data.band_count()))
-
+        
+        if data is None:
+            assert False, "Error - could not find any data for %s" % (imageName)
+        
         # return a hyimage
         out = hylite.HyImage( out, wav=data.get_wavelengths() )
         if data.has_band_names():
