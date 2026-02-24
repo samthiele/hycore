@@ -620,6 +620,10 @@ class Hole( BaseCollection ):
             for _T, _O in zip(T, O):
                 apply_kwargs['outline'] = outline
                 img = _T.apply(n, bands, strict, **apply_kwargs)
+                if ('.png' in n.lower()) or ('.jpg' in n.lower()): # convert to uint8 to ensure proper saving
+                    if np.nanmax( img.data ) <= 1:
+                        img.data = img.data * 255
+                    img.data = img.data.astype(np.uint8)
                 _O.set(n, img)
                 _O.save()
                 _O.free()
